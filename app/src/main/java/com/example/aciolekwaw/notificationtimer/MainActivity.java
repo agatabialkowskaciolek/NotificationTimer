@@ -12,9 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RemoteViews;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.text.ParseException;
+import org.joda.time.DateTime;
+import org.joda.time.Seconds;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -28,17 +29,12 @@ public class MainActivity extends AppCompatActivity {
     public static final int CUSTOM_NOTIFICATION_ID = 6;
 
     NotificationManager notificationManager;
-
     Button headsUpButton;
-
     Button normalButton;
     BroadcastReceiver _broadcastReceiver;
     TextView textTime;
     final SimpleDateFormat _sdfWatchTime = new SimpleDateFormat("HH:mm");
     Button buttonTimerNotification;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
         setTitle("LollipopNotifications");
 
         textTime = (TextView) findViewById(R.id.textViewTime);
+        textTime.setText(_sdfWatchTime.format(new Date()));
 
-        // textTime.setText(getCurrentTime());
+
 
         headsUpButton = (Button) findViewById(R.id.buttonHeadsUp);
         headsUpButton.setOnClickListener(new View.OnClickListener() {
@@ -63,21 +60,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //textTime.setText(_sdfWatchTime.format(new Date()));
-
-
-        //  TextView _tvTime;
-
-
-
-    /*    visibilityRadioGroup = (RadioGroup) findViewById(R.id.visibilityRadioGroup);
-        visibilityButton = (Button) findViewById(R.id.visibilityButton);
-        visibilityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createOtherNotification();
-            }
-       });*/
 
         normalButton = (Button) findViewById(R.id.normalButton);
         normalButton.setOnClickListener(new View.OnClickListener() {
@@ -97,24 +79,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 createTimeNotification();
-                textViewDifference.setText(String.valueOf(timeToEnd()));
-
-
+                textViewDifference.setText(timeToEnd());
 
             }
         });
 
 
-
-
-
-   /*     customButton = (Button) findViewById(R.id.customButton);
-        customButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createCustomNotification();
-            }
-        });*/
     }
 
     @Override
@@ -132,23 +102,7 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(_broadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
     }
 
- /*   private String getCurrentTimeFormat(String timeFormat){
-        String time = "";
-        SimpleDateFormat df = new SimpleDateFormat(timeFormat);
-        Calendar c = Calendar.getInstance();
-        time = df.format(c.getTime());
 
-        return time;
-    }*/
-
-    /*  private String getCurrentTime() {
-
-          final Calendar c = Calendar.getInstance();
-
-          return(new StringBuilder()
-                  .append(c.get(Calendar.HOUR_OF_DAY)).append(":")
-                  .append(c.get(Calendar.MINUTE))).toString();
-      }*/
     private void createHeadsUpNotification() {
         NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher_notification)
@@ -157,35 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setContentTitle("Simple Heads-Up Notification")
                 .setContentText("This is a normal notification.");
-//        if (makeHeadsUpNotification) {
 
-//            Intent push = new Intent();
-//            push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            push.setClass(this, MainActivity.class);
-//
-//            PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
-//                    push, PendingIntent.FLAG_CANCEL_CURRENT);
-//            notificationBuilder
-//                    .setContentText("A Heads-Up notification for Lollipop and above")
-//                    .setFullScreenIntent(fullScreenPendingIntent, true);
-
-//        }
-
-//        notificationBuilder.set
-
-//        NotificationCompat.InboxStyle inboxStyle =
-//                new NotificationCompat.InboxStyle();
-//        String[] events = {"Additional text one","Additional Text two"};
-//// Sets a title for the Inbox in expanded layout
-//        inboxStyle.setBigContentTitle("Extended contents");
-//
-//// Moves events into the expanded layout
-//        for (int i=0; i < events.length; i++) {
-//            inboxStyle.addLine(events[i]);
-//        }
-//// Moves the expanded layout object into the notification object.
-//        notificationBuilder.setStyle(inboxStyle);
-//
         notificationManager.notify(HEADS_UP_NOTIFICATION_ID, notificationBuilder.build());
     }
 
@@ -201,41 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         notificationManager.notify(HEADS_UP_NOTIFICATION_ID, notificationBuilder.build());
     }
- /*   private void createOtherNotification() {
-        int visibility;
-        String description;
-        int notificationId;
-        int notificationIconId;
 
-        switch (visibilityRadioGroup.getCheckedRadioButtonId()) {
-            case R.id.privateRadioButton:
-                visibility = NotificationCompat.VISIBILITY_PRIVATE;
-                description = "This notification is partially visible on lock screen";
-                notificationId = PRIVATE_NOTIFICATION_ID;
-                notificationIconId = R.drawable.ic_private_notification;
-                break;
-            case R.id.secretRadioButton:
-                visibility = NotificationCompat.VISIBILITY_SECRET;
-                description = "This notification is never visible on lock screen";
-                notificationId = SECRET_NOTIFICATION_ID;
-                notificationIconId = R.drawable.ic_secret_notification;
-                break;
-            default:
-                //If not selected, returns PUBLIC as default.
-                visibility = NotificationCompat.VISIBILITY_PUBLIC;
-                description = "This notification is always visible on lock screen";
-                notificationId = PUBLIC_NOTIFICATION_ID;
-                notificationIconId = R.drawable.ic_public_notification;
-        }
-
-       NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                .setContentTitle("Notification Visibility for Lollipop");
-
-        notificationBuilder.setVisibility(visibility);
-        notificationBuilder.setContentText(description);
-        notificationBuilder.setSmallIcon(notificationIconId);
-        notificationManager.notify(notificationId, notificationBuilder.build());
-    }*/
 
     private void createCustomNotification() {
         RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
@@ -247,38 +139,81 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public long timeToEnd()  {
+    public String timeToEnd() {
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+ /*       int numMinutes = 0;
 
-        Date date1 = null;
+        String currentTime = textTime.getText().toString();
+        String endingLesson = "05:00";
+
         try {
-            date1 = simpleDateFormat.parse(textTime.getText().toString());
-        } catch (ParseException e) {
+
+            SimpleDateFormat formatYmd = new SimpleDateFormat("HH:mm");
+
+            Date d1 = formatYmd.parse(currentTime);
+            Date d2 = formatYmd.parse(endingLesson);
+
+            DateTime dt1 = new DateTime(d1);
+            DateTime dt2 = new DateTime(d2);
+            numMinutes = Minutes.minutesBetween(dt1, dt2).getMinutes();
+            // Days between 2013-09-01 and 2013-09-02: 1
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        Date date2 = null;
-        try {
-            date2 = simpleDateFormat.parse("01:15 AM");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
+        return String.valueOf(numMinutes);*/
 
-        long difference = date2.getTime() - date1.getTime();
+        DateTime now = DateTime.now();
+        DateTime dateTime = now.plusMinutes(10);
+        Seconds seconds = Seconds.secondsBetween(now, dateTime);
 
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-
-
-        long elapsedMinutes = difference / minutesInMilli;
-        difference = difference % minutesInMilli;
-
-        Toast.makeText(MainActivity.this, (int) difference, Toast.LENGTH_LONG).show();
-
-
-
-        return difference;
+        return String.valueOf(seconds);
     }
+
+   /* public long timeToEnd()  {
+
+
+
+
+        String string1 = "05:00:00 PM";
+        Date time1=null;
+        try {
+            time1 = new SimpleDateFormat("HH:mm a").parse(string1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar1 = Calendar.getInstance();
+
+        calendar1.setTime(time1);
+
+        String string2 = "03:00:00 PM";
+        Date time2 = null;
+        try {
+            time2 = new SimpleDateFormat("HH:mm a").parse(string2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(time2);
+        calendar2.add(Calendar.DATE, 1);
+
+      *//*  Date x = calendar1.getTime();
+        Date xy = calendar2.getTime();
+        long diff = x.getTime() - xy.getTime();
+        long diffMinutes = diff / (60 * 1000);
+        float diffHours = diffMinutes / 60;
+        System.out.println("diff hours" + diffHours);*//*
+
+        if(calendar2.get(Calendar.AM_PM) == 1 && calendar1.get(Calendar.AM_PM) == 0)     {
+            calendar2.add(Calendar.DATE, 1);
+        }
+        long diff = calendar1.getTimeInMillis() - calendar2.getTimeInMillis();
+
+
+
+        return (long) diff;
+    }*/
 }
 
