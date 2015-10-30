@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Minutes minutes = Minutes.minutesBetween(nowlTime, endTime);
                     String minutesToEnd = String.valueOf(minutes.getMinutes());
-
+                    i++;
                     String text = "jestes w " + i+"bloku lekcyjnym";
                     Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 
