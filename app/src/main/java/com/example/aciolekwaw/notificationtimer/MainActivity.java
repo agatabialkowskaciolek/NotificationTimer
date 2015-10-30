@@ -12,9 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RemoteViews;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.joda.time.LocalTime;
-import org.joda.time.Period;
+import org.joda.time.Minutes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle("LollipopNotifications");
 
-        textViewDifference  = (TextView) findViewById(R.id.textViewDifference);
+        textViewDifference = (TextView) findViewById(R.id.textViewDifference);
         tv = (TextView) findViewById(R.id.textViewTime1);
 
 
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 createTimeNotification();
                 tv.setText(timeToEnd());
+
             }
         });
     }
@@ -144,24 +146,56 @@ public class MainActivity extends AppCompatActivity {
 
     public String timeToEnd() {
 
-       
-        LocalTime localTime= new LocalTime();
-        LocalTime endTime = new LocalTime("16:00");
 
-// period of 1 year and 7 days
-        Period period = new Period(localTime, endTime);
+        LocalTime nowlTime = new LocalTime();
 
-// calc will equal end
-       // DateTime calc = start.plus(period);
 
-// able to calculate whole days between two dates easily
-       // Days days = Days.daysBetween(start, end);
+        if ((nowlTime.isAfter(LessonTime.startTimeLesson.get(0)) & nowlTime.isBefore(LessonTime.endTimeLesson.get(LessonTime.endTimeLesson.size() - 1)))){
 
-// able to calculate whole months between two dates easily
-        //Months months = Months.monthsBetween(start, end);
+            for (int i = 0; i < LessonTime.startTimeLesson.size(); i++) {
+                LocalTime startTime = LessonTime.startTimeLesson.get(i);
+                LocalTime endTime = LessonTime.endTimeLesson.get(i);
+                LocalTime nowTime = new LocalTime();
 
-        //textViewDifference.setText(String.valueOf(period));
-        return String.valueOf(period.getMinutes());
+                if (nowTime.isAfter(startTime) & (nowTime.isBefore(endTime))) {
+
+                    Minutes minutes = Minutes.minutesBetween(nowlTime, endTime);
+                    String minutesToEnd = String.valueOf(minutes.getMinutes());
+
+                    String text = "jestes w " + i+"bloku lekcyjnym";
+                    Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+
+
+                    return minutesToEnd;
+
+                }
+
+            }
+
+               /* for(int i=0;i<LessonTime.startTimeLesson.size();i++){
+                    LocalTime startTime = LessonTime.startTimeLesson.get(i);
+                    LocalTime endTime = LessonTime.endTimeLesson.get(i);
+                    LocalTime nowTime = new LocalTime();
+
+                    if(nowTime.isAfter(startTime)&(nowTime.isBefore(endTime))) {
+
+                        Minutes minutes = Minutes.minutesBetween(nowlTime, endTime);
+                        String minutesToEnd= String.valueOf(minutes);
+
+                        String text = "jestes w "+i+minutesToEnd;
+                        Toast.makeText(this, text,Toast.LENGTH_LONG).show();
+
+                        return text;
+                    }
+                }
+
+                return "nieznane";
+            }*/
+
+
+        }
+
+        return"nieznane";
     }
 }
 
