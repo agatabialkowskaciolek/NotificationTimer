@@ -157,41 +157,34 @@ public class MainActivity extends AppCompatActivity {
                 LocalTime endTime = LessonTime.endTimeLesson.get(i);
                 LocalTime nowTime = new LocalTime();
 
-                if (nowTime.isAfter(startTime) & (nowTime.isBefore(endTime))) {
+                if(nowTime.equals("08:00")){
+                    Toast.makeText(this, "Początkek zajęć", Toast.LENGTH_LONG).show();
+                }
+                else if(endTime.equals("21:00")){
+                    Toast.makeText(this, "Koniec zajęć zajęć", Toast.LENGTH_LONG).show();
+                }
+                else if((nowTime.isAfter(LessonTime.endTimeLesson.get(i)) &(nowTime.isBefore(LessonTime.startTimeLesson.get(i+1))))){
 
-                    Minutes minutes = Minutes.minutesBetween(nowlTime, endTime);
-                    String minutesToEnd = String.valueOf(minutes.getMinutes());
-                    i++;
-                    String text = "jestes w " + i+"bloku lekcyjnym";
-                    Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Jest przerwa", Toast.LENGTH_LONG).show();
+                }
+
+                else if (nowTime.isAfter(startTime) & (nowTime.isBefore(endTime))) {
+
+                    if((nowTime.isAfter(endTime.minusMinutes(5))&(nowTime.isBefore(endTime)))) {
+
+                        Minutes minutes = Minutes.minutesBetween(nowlTime, endTime);
+                        String minutesToEnd = String.valueOf(minutes.getMinutes());
+                        i++;
+                        String text = "jestes w " + i + "bloku lekcyjnym";
+                        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 
 
-                    return minutesToEnd;
+                        return minutesToEnd;
+                    }
 
                 }
 
             }
-
-               /* for(int i=0;i<LessonTime.startTimeLesson.size();i++){
-                    LocalTime startTime = LessonTime.startTimeLesson.get(i);
-                    LocalTime endTime = LessonTime.endTimeLesson.get(i);
-                    LocalTime nowTime = new LocalTime();
-
-                    if(nowTime.isAfter(startTime)&(nowTime.isBefore(endTime))) {
-
-                        Minutes minutes = Minutes.minutesBetween(nowlTime, endTime);
-                        String minutesToEnd= String.valueOf(minutes);
-
-                        String text = "jestes w "+i+minutesToEnd;
-                        Toast.makeText(this, text,Toast.LENGTH_LONG).show();
-
-                        return text;
-                    }
-                }
-
-                return "nieznane";
-            }*/
-
 
         }
 
