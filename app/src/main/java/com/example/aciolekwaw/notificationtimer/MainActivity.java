@@ -1,10 +1,14 @@
 package com.example.aciolekwaw.notificationtimer;
 
+import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int NORMAL_NOTIFICATION_ID = 5;
     public static final int CUSTOM_NOTIFICATION_ID = 6;
 
+    private MyService alarm;
     NotificationManager notificationManager;
     Button headsUpButton;
     Button normalButton;
@@ -39,12 +44,16 @@ public class MainActivity extends AppCompatActivity {
     TextView textViewDifference;
     TextView tv;
     private Object zone;
+    private int notification_id = 1;
+    LocalTime nowTime;
+
+    PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        nowTime = new LocalTime();
         notificationManager = (NotificationManager) getSystemService(Context
                 .NOTIFICATION_SERVICE);
         setContentView(R.layout.activity_main);
@@ -66,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         normalButton = (Button) findViewById(R.id.normalButton);
         normalButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,11 +94,60 @@ public class MainActivity extends AppCompatActivity {
         buttonTimerNotification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createTimeNotification();
-                tv.setText(timeToEnd());
+               /* createTimeNotification();
+                tv.setText(timeToEnd());*/
+
+                //presentHeadsUpNotification(Notification.VISIBILITY_PUBLIC, R.drawable.ic_launcher_notification, "titttititi", "tetetettxxxxttt");
+
 
             }
         });
+
+
+        alarm = new MyService();
+        Context context = this.getApplicationContext();
+
+            Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
+
+
+        for (int i = 0; i < LessonTime.endTimeLesson.size(); i++) {
+            if (nowTime.)) {
+
+                presentHeadsUpNotification(Notification.VISIBILITY_PUBLIC, R.drawable.ic_launcher_notification, "titttititi", "tetetettxxxxttt");
+            }
+        }
+    }
+
+    private void presentHeadsUpNotification(int visibility, int icon, String title, String text) {
+        Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+        notificationIntent.setData(Uri.parse("http://www.wgn.com"));
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setCategory(Notification.CATEGORY_PROMO)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setSmallIcon(icon)
+                .setAutoCancel(true)
+                .setVisibility(visibility)
+                .addAction(android.R.drawable.ic_menu_view, "details string", contentIntent)
+                .setContentIntent(contentIntent)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).build();
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(notification_id, notification);
+    }
+
+    public void exampleTime(){
+
+        Intent myIntent = new Intent(MainActivity.this , MyService.class);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        pendingIntent = PendingIntent.getService(MainActivity.this, 0, myIntent, 0);
+
+
+
+
     }
 
     @Override
@@ -155,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < LessonTime.startTimeLesson.size(); i++) {
                 LocalTime startTime = LessonTime.startTimeLesson.get(i);
                 LocalTime endTime = LessonTime.endTimeLesson.get(i);
-                LocalTime nowTime = new LocalTime();
+
 
                 if(nowTime.equals("08:00")){
                     Toast.makeText(this, "Początkek zajęć", Toast.LENGTH_LONG).show();
@@ -163,14 +223,26 @@ public class MainActivity extends AppCompatActivity {
                 else if(endTime.equals("21:00")){
                     Toast.makeText(this, "Koniec zajęć zajęć", Toast.LENGTH_LONG).show();
                 }
-                else if((nowTime.isAfter(LessonTime.endTimeLesson.get(i)) &(nowTime.isBefore(LessonTime.startTimeLesson.get(i+1))))){
+                else if((nowTime.isAfter(LessonTime.endTimeLesson.get(i)) &&(nowTime.isBefore(LessonTime.startTimeLesson.get(i+1))))){
 
-                    Toast.makeText(this, "Jest przerwa", Toast.LENGTH_LONG).show();
+             /*       if((LessonTime.endTimeLesson.equals(LessonTime.endTimeLesson.size()-1))||(LessonTime.startTimeLesson.equals(LessonTime.startTimeLesson.size()-1))){
+
+                    }
+                    else {
+                        Toast.makeText(this, "Jest przerwa", Toast.LENGTH_LONG).show();
+                    }*/
+
+                    try{
+
+                        Toast.makeText(this, "Jest przerwa", Toast.LENGTH_LONG).show();
+                    }
+                    catch (IndexOutOfBoundsException e){}
+
                 }
 
-                else if (nowTime.isAfter(startTime) & (nowTime.isBefore(endTime))) {
+                else if (nowTime.isAfter(startTime) && (nowTime.isBefore(endTime))) {
 
-                    if((nowTime.isAfter(endTime.minusMinutes(5))&(nowTime.isBefore(endTime)))) {
+                    //if((nowTime.isAfter(endTime.minusMinutes(5))&(nowTime.isBefore(endTime)))) {
 
                         Minutes minutes = Minutes.minutesBetween(nowlTime, endTime);
                         String minutesToEnd = String.valueOf(minutes.getMinutes());
@@ -180,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                         return minutesToEnd;
-                    }
+                   // }
 
                 }
 
