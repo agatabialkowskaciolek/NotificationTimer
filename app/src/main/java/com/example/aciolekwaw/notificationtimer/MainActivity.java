@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.view.View;
@@ -23,6 +24,8 @@ import org.joda.time.Minutes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     public static final int NORMAL_NOTIFICATION_ID = 5;
     public static final int CUSTOM_NOTIFICATION_ID = 6;
 
-    private MyService alarm;
     NotificationManager notificationManager;
     Button headsUpButton;
     Button normalButton;
@@ -43,21 +45,30 @@ public class MainActivity extends AppCompatActivity {
     Button buttonTimerNotification;
     TextView textViewDifference;
     TextView tv;
-    private Object zone;
     private int notification_id = 1;
     LocalTime nowTime;
 
     PendingIntent pendingIntent;
 
+    Timer timer;
+    TimerTask timerTask;
+
+    final Handler handler = new Handler();
+    LocalTime localTaskTimer ;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        nowTime = new LocalTime();
+
         notificationManager = (NotificationManager) getSystemService(Context
                 .NOTIFICATION_SERVICE);
         setContentView(R.layout.activity_main);
         setTitle("LollipopNotifications");
+
+
+        nowTime = new LocalTime();
 
         textViewDifference = (TextView) findViewById(R.id.textViewDifference);
         tv = (TextView) findViewById(R.id.textViewTime1);
@@ -104,19 +115,99 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        alarm = new MyService();
-        Context context = this.getApplicationContext();
-
-            Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
 
 
-        for (int i = 0; i < LessonTime.endTimeLesson.size(); i++) {
-            if (nowTime.)) {
+
+/*//
+        Toast toast = Toast.makeText(getApplicationContext(), nowTime.toString(), Toast.LENGTH_SHORT);
+
+        toast.show();*/
+
+
+        /*for (int i = 0; i < LessonTime.endTimeLesson.size(); i++) {
+            if (nowTime.equals(LessonTime.endTimeLesson.get(i))) {*/
 
                 presentHeadsUpNotification(Notification.VISIBILITY_PUBLIC, R.drawable.ic_launcher_notification, "titttititi", "tetetettxxxxttt");
             }
-        }
+ /*       }
+    }*/
+
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        //onResume we start our timer so it can start when the app comes from the background
+
+        startTimer();
+
     }
+
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+        //initialize the TimerTask's job
+        initializeTimerTask();
+
+        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
+        timer.schedule(timerTask, 5000, 1000); //
+
+    }
+
+
+
+    public void stoptimertask(View v) {
+        //stop the timer, if it's not already null
+        if (timer != null) {
+
+            timer.cancel();
+
+            timer = null;
+
+        }
+
+    }
+
+    public void initializeTimerTask() {
+
+        timerTask = new TimerTask() {
+
+            public void run() {
+
+                //use a handler to run a toast that shows the current timestamp
+
+                handler.post(new Runnable() {
+
+                    public void run() {
+
+                        //get the current timeStamp
+
+                        //Calendar calendar = Calendar.getInstance();
+
+                        localTaskTimer = new LocalTime();
+
+                       // final String strDate = simpleDateFormat.format(calendar.getTime());
+
+                        //show the toast
+
+                     int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(getApplicationContext(), localTaskTimer.toString(), duration);
+
+                        toast.show();
+
+                    }
+
+
+                });
+
+            }
+
+        };
+
+    }
+
 
     private void presentHeadsUpNotification(int visibility, int icon, String title, String text) {
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
