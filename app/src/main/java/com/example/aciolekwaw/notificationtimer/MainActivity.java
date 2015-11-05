@@ -70,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
         nowTime = new LocalTime();
 
+        startTimer();
+        initializeTimerTask();
+
         textViewDifference = (TextView) findViewById(R.id.textViewDifference);
         tv = (TextView) findViewById(R.id.textViewTime1);
 
@@ -127,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         /*for (int i = 0; i < LessonTime.endTimeLesson.size(); i++) {
             if (nowTime.equals(LessonTime.endTimeLesson.get(i))) {*/
 
-                presentHeadsUpNotification(Notification.VISIBILITY_PUBLIC, R.drawable.ic_launcher_notification, "titttititi", "tetetettxxxxttt");
+               // presentHeadsUpNotification(Notification.VISIBILITY_PUBLIC, R.drawable.ic_launcher_notification, "titttititi", "tetetettxxxxttt");
             }
  /*       }
     }*/
@@ -190,14 +193,20 @@ public class MainActivity extends AppCompatActivity {
                        // final String strDate = simpleDateFormat.format(calendar.getTime());
 
                         //show the toast
+                        for (int i = 0; i < LessonTime.endTimeLesson.size(); i++) {
+                            if (nowTime.equals(LessonTime.endTimeLesson.get(i))) {
 
-                     int duration = Toast.LENGTH_SHORT;
+                                presentHeadsUpNotification(Notification.VISIBILITY_PUBLIC, R.drawable.ic_launcher_notification, "titttititi", "tetetettxxxxttt");
+                            }
+      }
+    }
+                   /*  int duration = Toast.LENGTH_SHORT;
 
                         Toast toast = Toast.makeText(getApplicationContext(), localTaskTimer.toString(), duration);
 
                         toast.show();
 
-                    }
+                    }*/
 
 
                 });
