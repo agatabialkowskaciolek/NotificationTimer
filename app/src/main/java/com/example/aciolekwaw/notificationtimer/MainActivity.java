@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
         nowTime = new LocalTime();
 
-        startTimer();
-        initializeTimerTask();
+  /*      startTimer();
+        initializeTimerTask();*/
 
         textViewDifference = (TextView) findViewById(R.id.textViewDifference);
         tv = (TextView) findViewById(R.id.textViewTime1);
@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 createHeadsUpNotification();
+
+                
             }
         });
 
@@ -150,11 +152,12 @@ public class MainActivity extends AppCompatActivity {
     public void startTimer() {
         //set a new Timer
         timer = new Timer();
+
         //initialize the TimerTask's job
         initializeTimerTask();
 
         //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
-        timer.schedule(timerTask, 5000, 1000); //
+        timer.schedule(timerTask, 0, 6000); //
 
     }
 
@@ -190,24 +193,28 @@ public class MainActivity extends AppCompatActivity {
 
                         localTaskTimer = new LocalTime();
 
-                       // final String strDate = simpleDateFormat.format(calendar.getTime());
+                        // final String strDate = simpleDateFormat.format(calendar.getTime());
+                        for (int i = 0; i < LessonTime.startTimeLesson.size(); i++) {
+                            if ((localTaskTimer.isAfter(LessonTime.endTimeLesson.get(i))&&(localTaskTimer.isBefore(LessonTime.startTimeLesson.get(i+1))))) {
 
-                        //show the toast
-                        for (int i = 0; i < LessonTime.endTimeLesson.size(); i++) {
-                            if (nowTime.equals(LessonTime.endTimeLesson.get(i))) {
 
-                                presentHeadsUpNotification(Notification.VISIBILITY_PUBLIC, R.drawable.ic_launcher_notification, "titttititi", "tetetettxxxxttt");
+
+                                presentHeadsUpNotification(Notification.VISIBILITY_PUBLIC, R.drawable.ic_launcher_notification, "czas na przerwe", "PRZERWA");
+
+                                //break;
+                                try{
+
+                                    //Toast.makeText(getApplicationContext(), "Jest przerwa", Toast.LENGTH_SHORT).show();
+                                }
+                                catch (IndexOutOfBoundsException e){
+
+                                }
+                                break;
+
                             }
-      }
-    }
-                   /*  int duration = Toast.LENGTH_SHORT;
+                        }
 
-                        Toast toast = Toast.makeText(getApplicationContext(), localTaskTimer.toString(), duration);
-
-                        toast.show();
-
-                    }*/
-
+                    }
 
                 });
 
@@ -216,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
     }
-
 
     private void presentHeadsUpNotification(int visibility, int icon, String title, String text) {
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW);

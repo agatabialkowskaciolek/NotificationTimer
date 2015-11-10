@@ -34,7 +34,7 @@ public class LessonTime {
         add(new LocalTime("10:35"));
         add(new LocalTime("11:25"));
         add(new LocalTime("12:25"));
-        add(new LocalTime("13:48"));
+        add(new LocalTime("13:15"));
         add(new LocalTime("14:15"));
         add(new LocalTime("15:05"));
         add(new LocalTime("16:30"));
